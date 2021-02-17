@@ -1,0 +1,10 @@
+
+! clang Lexical.c -o test.exe !
+! test.exe Sample_input.txt output.txt !
+! test.exe Sample_input2.txt output.txt !
+
+
+x=a + b;
+z=c+ d;
+a=e-f;
+b=g*n;
