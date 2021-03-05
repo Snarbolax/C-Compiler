@@ -413,8 +413,8 @@ int main(int argc, const char* argv[]) {
 	//fileOUT = fopen(argv[2], "w");
 
     lexer(fileIN, fileOUT);
-	/*if (_debug == true)
-		lists_check();*/
+	if (_debug == true)
+		lists_check();
 	close_files(fileIN, fileOUT);
 
 	return 0;
