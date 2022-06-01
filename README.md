@@ -23,13 +23,15 @@
 <ol><li><b>Problem Statement</b></li>
 “Write a lexer() function that returns a token when it is needed. The  lexer() should return a record, one field for the token and another field the actual "value" of the token (lexeme).”
 <br></br>
+"The syntax analyzer should print out the tokens, lexemes, and production rules to an output file. The grammar of the production rules should also be rewritten to remove any left recursion."
+<br></br>
 
 <li><b>How to use your program</b></li>
 Input “./Lexical [INPUT] [OUTPUT]” into your OS’s terminal while in the same directory/folder of the Lexical program. Replace [INPUT] and [OUTPUT] with the names of the input and output files respectively; an input file and output file are both necessary.
 <br></br>
 
 <li><b>Design of your program</b></li>
-The program ultimately uses the stdio.h, stdlib.h, string.h, and ctype.h libraries for its implementation. Also, it has 3 functions implemented in it: the print_header function just prints the 
+The program is coded in C and ultimately uses the stdio.h, stdlib.h, string.h, and ctype.h libraries for its implementation. Also, it has 3 functions implemented in it: the print_header function just prints the 
 
 	“TOKENS        Lexemes”
         
@@ -53,15 +55,26 @@ Identifier token ends after a separator, operator, or space.
 	* Integer token ends after a letter, separator, operator, or space.
 <br></br>
 
-~~Also, I have no idea what “YOU MUST ... show the NFSM using Thompson” means.~~
+~~Also, I have no idea what “YOU MUST ... show the NFSM using Thompson” means.~~ (Rectified in the 2021 C++ iteration of the compiler.)
 
-Rectified in the 2021 C++ iteration of the compiler.
+The syntax analyzer uses the Recursive Descent Parser (RDP) to analyze statements. It relies on Lexical.c to identify tokens and build lists of the identified tokens (char toks[]) and lexemes (char lexs[]) for Syntactical.c to parse through. The built lists are how Lexical.c passes the identified tokens and lexemes to Syntactical.c.
+
+A global iterator (int improv) is used to keep sync and access the different tokens going through each function.
+
+In addition, each rule has been turned into a function which accepts inputs of strings (i.e. tokens) as arguments.  If a token / statement turns out to not be part of a particular rule or statement-type, the function that it is currently in returns a FALSE. Otherwise, the functions will return TRUE and allow the parent functions to continue on parsing the tokens in a statement.
+
+If there are any syntax errors (because of the users) or rule error (due to my implementation of the rules), the statement function (which identifies whether a given statement is a declaration, expression, or assignment) passes the boolean FALSE value to a small error notifier. The notifier outputs the first (likely) token that may be the cause of the syntax error. The error messages from the notifier are only printed to the console and NOT printed to the output file.
+
+The outputs from Lexical.c have been suppressed by default. You may unsuppress them and allow them to print to the console and output file by changing switch_lex_print(false) to switch_lex_print(true) in the main function of Syntactical.c.
 <br></br>
 
 <li><b>Any limitations</b></li>
-Any possible valid token must be under the size of 100 bytes. The user must change the definition of BUFLEN -- which is located near the top of the source file -- to an integer value larger than 100 if they want to manually bypass this limitation.
+Any possible valid token must be under the size of 512 bytes. The lists for both tokens and lexemes are limited to 512 bytes. The user must change the definition of BUFLEN -- which is located near the top of the source file -- to an integer value larger than 512 if they want to manually bypass this limitation.
 <br></br>
 
 <li><b>Any shortcomings</b></li>
-The lexer is not smart enough to disqualify floats that have multiple precision indicators “.” from being floats. The 2D array does not include all of the possible states and transitions for each situation (i.e. a handful of exceptions are in loops instead of being implemented as a state in the array.)
+<ul><li>The lexer is not smart enough to disqualify floats that have multiple precision indicators “.” from being floats.</li>
+	<li>The 2D array does not include all of the possible states and transitions for each situation (i.e. a handful of exceptions are in loops instead of being implemented as a state in the array.)</li>
+	<li>The rules for parsing compound operators are not implemented correctly in Lexical.c, as they are discarded as invalid tokens instead.</li>
+    <li>The "if" and "while" rules are not implemented.</li></ul>
 </ol>
